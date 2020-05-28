@@ -81,6 +81,7 @@ function displayResults(eventResults, searchTerm) {
 	$('#js-search-results').empty();
 	
 	potatoes.forEach(function(event) {
+
 		// append means adding on to 
 		$('#js-search-results').append(`
 			<div class="event">
