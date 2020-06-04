@@ -6,11 +6,30 @@
 
 		const searchTerm = $('#js-search-term').val();
 		const searchCity = $('#js-search-city').val();
-		console.log(searchTerm, searchCity);
 
-		// call fetch events with search term
-		fetchEvents(searchTerm, searchCity);
-		console.log('watchSearchForm ran');
+		if (searchTerm === "") {
+			$('#js-search-results').empty();
+
+			$('#js-search-results').append(`
+				<div class="error">
+					<p>Please enter an artist or keyword and try again.</p>
+				</div>`
+			);
+		} else if (searchCity === "") {
+			$('#js-search-results').empty();
+
+			$('#js-search-results').append(`
+				<div class="error">
+					<p>Please enter a city and try again.</p>
+				</div>`
+			);
+		} else {
+			console.log(searchTerm, searchCity);
+
+			// call fetch events with search term
+			fetchEvents(searchTerm, searchCity);
+			console.log('watchSearchForm ran');
+		}
 	});
 };
 
