@@ -5,17 +5,18 @@
 		e.preventDefault();
 
 		const searchTerm = $('#js-search-term').val();
-		console.log(searchTerm);
+		const searchCity = $('#js-search-city').val();
+		console.log(searchTerm, searchCity);
 
 		// call fetch events with search term
-		fetchEvents(searchTerm);
+		fetchEvents(searchTerm, searchCity);
 		console.log('watchSearchForm ran');
 	});
 };
 
 // format the query parameters into string joined by '&'
 function formatQueryParams(params) {
-	// keyword=searchTerm&apikey=811DB6AHooasuDwqcadNXKrcBHDunzq3&size=20
+	// https://app.ticketmaster.com/discovery/v2/events.json?keyword=Taylor Swift&apikey=811DB6AHooasuDwqcadNXKrcBHDunzq3&size=20&city=searchCity
 
 	const queryItems = Object.keys(params)
 	.map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`);
@@ -24,13 +25,14 @@ function formatQueryParams(params) {
 	return queryItems.join('&');
 };
 
-// fetch events using 'searchTerm' as keyword below
-function fetchEvents(searchTerm) {
+// fetch events using 'searchTerm' and 'searchCity' as keyword/city below
+function fetchEvents(searchTerm, searchCity) {
 	// Search parameters to format
 	const params = {
 		keyword: searchTerm,
     	apikey: '811DB6AHooasuDwqcadNXKrcBHDunzq3',
-		size: 20
+		size: 20,
+		city: searchCity
 	};
 
 	const baseUrl = 'https://app.ticketmaster.com/discovery/v2/events.json';
@@ -50,7 +52,7 @@ function fetchEvents(searchTerm) {
 			}
 		})
 		.then(responseJson => {
-			displayResults(responseJson, searchTerm);
+			displayResults(responseJson, searchTerm, searchCity);
 		})
 		.catch(err => {
 			console.log(err);
@@ -59,28 +61,28 @@ function fetchEvents(searchTerm) {
 	console.log('fetchGroups ran');
 }
 
-function displayResults(eventResults, searchTerm) {
+function displayResults(eventResults, searchTerm, searchCity) {
 
 	if (eventResults._embedded === undefined) {
 		$('#js-search-results').empty();
 
 		$('#js-search-results').append(`
 			<div class="error">
-				<p>There are no events coming up for "${searchTerm}". Try again.</p>
+				<p>There are no events coming up for "${searchTerm}" in "${searchCity}". Try again.</p>
 			</div>`
 		);
 
-		console.log("Your search for " + searchTerm + " didn't work. Try again.");
+		console.log("Your search for " + searchTerm + " in " + searchCity + " didn't work. Try again.");
 	}; 
 
-	const potatoes = eventResults._embedded.events;
+	const events = eventResults._embedded.events;
 
-	console.log(potatoes);
+	console.log(events);
 
 	// Remove old search results
 	$('#js-search-results').empty();
 	
-	potatoes.forEach(function(event) {
+	events.forEach(function(event) {
 
 		// append means adding on to 
 		$('#js-search-results').append(`
